@@ -17,8 +17,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/api/availability",
-    () => Results.Ok(StaticDetails.RoomsAvailability));
+app.MapGet("/api/availability", /*async*/
+    () => Results.Ok(StaticDetails.RoomsAvailability))
+    /*.WithName("GetAvailability)"*/
+    .Produces(200);
+
+app.MapGet("/api/coupon/{key:int}", (int key) =>
+{
+    return Results.Ok(StaticDetails.RoomsAvailability.FirstOrDefault(u=>u.Key==key));
+})
+    /*.WithName("GetRoomStatus")*/
+    .Produces(200);
+
+//app.MapPut("/api/coupon/{key:int}", (int key) =>);
 
 app.UseHttpsRedirection();
 
