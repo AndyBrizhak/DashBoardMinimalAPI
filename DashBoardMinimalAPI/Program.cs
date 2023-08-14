@@ -1,5 +1,5 @@
 using DashBoardMinimalAPI;
-
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddSingleton<IRooms, Rooms>();
+
 
 var app = builder.Build();
 
@@ -19,19 +19,28 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/api/availability", /*async*/
+app.MapGet("/api/rooms", async
     () => Results.Ok(StaticDetails.RoomsStatus))
-    /*.WithName("GetAvailability)"*/
+    .WithName("GetRooms")
     .Produces(200);
 
-app.MapGet("/api/coupon/{key:int}", (int key) =>
+app.MapGet("/api/room/{key:int}", async
+    (int key) =>
 {
+    if (key < 1 || key>20)
+    { 
+        return Results.BadRequest("Invalid key for room");
+    }
     return Results.Ok(StaticDetails.RoomsStatus.FirstOrDefault(u=>u.Key==key));
 })
-    /*.WithName("GetRoomStatus")*/
+    .WithName("GetRoom")
     .Produces(200);
 
-//app.MapPut("/api/coupon/{key:int}", (int key) =>);
+app.MapPut("/api/changestatus", 
+    ([FromBody]int key, string status) =>
+    {
+     StaticDetails.RoomsStatus[key] = status;
+    });
 
 app.UseHttpsRedirection();
 
