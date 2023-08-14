@@ -5,8 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//builder.Services.AddSingleton<IRooms, Rooms>();
 
 var app = builder.Build();
 
@@ -18,13 +20,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/api/availability", /*async*/
-    () => Results.Ok(StaticDetails.RoomsAvailability))
+    () => Results.Ok(StaticDetails.RoomsStatus))
     /*.WithName("GetAvailability)"*/
     .Produces(200);
 
 app.MapGet("/api/coupon/{key:int}", (int key) =>
 {
-    return Results.Ok(StaticDetails.RoomsAvailability.FirstOrDefault(u=>u.Key==key));
+    return Results.Ok(StaticDetails.RoomsStatus.FirstOrDefault(u=>u.Key==key));
 })
     /*.WithName("GetRoomStatus")*/
     .Produces(200);
