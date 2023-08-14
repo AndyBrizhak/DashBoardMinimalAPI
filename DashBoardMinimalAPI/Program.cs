@@ -36,8 +36,8 @@ app.MapGet("/api/room/{key:int}", async
     .WithName("GetRoom")
     .Produces(200);
 
-app.MapPut("/api/changestatus", 
-    ([FromBody]int key, string status) =>
+app.MapPut("/api/changestatus/{key:int}", 
+    ([FromBody] string status, int key) =>
     {
      StaticDetails.RoomsStatus[key] = status;
     });
